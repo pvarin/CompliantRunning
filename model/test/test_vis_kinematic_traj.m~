@@ -1,0 +1,15 @@
+function test_vis_kinematic_traj
+    % initialize the state
+    q = example_kinematic_trajectory;
+    p = [.2,1,1,.3,-.5];
+    animate_trajectory(q.p);
+    % plot the trajectory
+%     figure(1); clf
+%     for i=1:size(q,2)
+%         clf; hold on;
+%         axis equal
+%         axis([-2 2 -2 2]) 
+%         plot_body(q(:,i),p)
+%         drawnow
+%     end
+end
