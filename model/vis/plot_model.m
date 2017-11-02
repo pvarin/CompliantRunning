@@ -1,47 +1,44 @@
 function plot_model(q,p)
     % compute keypoint frames
-    body_frame = T_world_body(q,p);
-    hip_frame = body_frame*T_body_hip(q,p);
-    knee_frame = hip_frame*T_hip_knee(q,p);
-    foot_frame = knee_frame*T_knee_foot(q,p);
-    hip2_frame = hip_frame*T_hip_hip2(q,p);
-    knee2_frame = hip2_frame*T_hip_knee(q,p);
+    [body,hip,hip2,knee,knee2,foot,...
+          body_com, hip_com, knee_com, knee2_com, foot_com]...
+                                                          = get_frames(q,p);
     
     % plot the upper femur linkage
-    x_femur_upper = [hip_frame(1:2,3), knee_frame(1:2,3)];
+    x_femur_upper = [hip(1:2,3), knee(1:2,3)];
     plot(x_femur_upper(1,:), x_femur_upper(2,:),'LineWidth',5);
     
     % plot the lower femur linkage
-    x_femur_lower = [hip2_frame(1:2,3), knee2_frame(1:2,3)];
+    x_femur_lower = [hip2(1:2,3), knee2(1:2,3)];
     plot(x_femur_lower(1,:),x_femur_lower(2,:),'LineWidth',5);
     
     % plot hip linkage
-    x_hip = [body_frame(1:2,3), hip_frame(1:2,3), hip2_frame(1:2,3)];
+    x_hip = [body(1:2,3), hip(1:2,3), hip2(1:2,3)];
     plot(x_hip(1,:),x_hip(2,:),'LineWidth',5);
     
     % plot the knee to foot linkage
-    x_leg = [knee_frame(1:2,3), foot_frame(1:2,3)];
+    x_leg = [knee(1:2,3), foot(1:2,3)];
     plot(x_leg(1,:),x_leg(2,:),'LineWidth',5);    
     
     % plot coordinate frames
-    plot_coordinate_frame(body_frame);
-    plot_coordinate_frame(hip_frame);
-    plot_coordinate_frame(hip2_frame);
-    plot_coordinate_frame(knee_frame);
-    plot_coordinate_frame(knee2_frame);
-    plot_coordinate_frame(foot_frame);
+    plot_coordinate_frame(body);
+    plot_coordinate_frame(hip);
+    plot_coordinate_frame(hip2);
+    plot_coordinate_frame(knee);
+    plot_coordinate_frame(knee2);
+    plot_coordinate_frame(foot);
     
     % compute and plot center of mass
-    body_com_frame = body_frame*T_body_com(p);
-    plot_com(body_com_frame)
-    hip_com_frame = hip_frame*T_hip_com(p);
-    plot_com(hip_com_frame)
-    knee2_com_frame = knee2_frame*T_knee2_com(p);
-    plot_com(knee2_com_frame);
-    knee_com_frame = knee_frame*T_knee_com(p);
-    plot_com(knee_com_frame)
-    foot_com_frame = foot_frame*T_foot_com(p);
-    plot_com(foot_com_frame)
+%     body_com_frame = body_frame*T_body_com(p);
+    plot_com(body_com)
+%     hip_com_frame = hip_frame*T_hip_com(p);
+    plot_com(hip_com)
+%     knee2_com_frame = knee2_frame*T_knee2_com(p);
+    plot_com(knee2_com);
+%     knee_com_frame = knee_frame*T_knee_com(p);
+    plot_com(knee_com)
+%     foot_com_frame = foot_frame*T_foot_com(p);
+    plot_com(foot_com)
 end
 
 function plot_coordinate_frame(T)
