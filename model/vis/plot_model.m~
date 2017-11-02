@@ -25,16 +25,10 @@ function plot_model(q,p)
     plot_coordinate_frame(knee_frame);
     
     % center of mass
-    body_com_frame = body_frame*T_body_com(p);
-    plot_com(body_com_frame)
-    hip_com_frame = hip_frame*T_hip_com(p);
-    plot_com(hip_com_frame)
-    knee2_com_frame = knee2_frame*T_knee2_com(p);
-    plot_com(knee2_com_frame);
-    knee_com_frame = knee_frame*T_knee_com(p);
-    plot_com(knee_com_frame)
-    foot_com_frame = foot_frame*T_foot_com(p);
-    plot_com(foot_com_frame)
+%     body_com_frame = body_frame*T_body_com(p);
+%     hip_com_frame = hip_frame*T_hip_com(p);
+%     hip2_com_frame = hip2_frame*T_hip2_com(p);
+%     knee_com_frame = knee_frame*
 end
 
 function plot_coordinate_frame(T)
@@ -48,23 +42,8 @@ function plot_coordinate_frame(T)
 end
 
 function plot_com(T)
-    eps = .025;
     o = [0;0;1]; % origin
-    i1 = [eps;0;1]; % x_axis
-    i2 = [-eps;0;1]; % x_axis
-    j1 = [0;eps;1]; % y_axis
-    j2 = [0;-eps;1]; % y_axis
-    
-    % transform
-    o = T*o;
-    i = T*[i1 i2];
-    j = T*[j1 j2];
-    
-    % plot
-    plot(o(1),o(2),'ko')
-    plot(i(1,:),i(2,:),'k')
-    plot(j(1,:),j(2,:),'k')
-    
-    
+    i = [.1;0;1]; % x_axis
+    j = [0;.1;1]; % y_axis
 
 end
