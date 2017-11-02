@@ -7,18 +7,21 @@ function plot_model(q,p)
     hip2_frame = hip_frame*T_hip_hip2(q,p);
     knee2_frame = hip2_frame*T_hip_knee(q,p);
     
+    % plot the upper femur linkage
+    x_femur_upper = [hip_frame(1:2,3), knee_frame(1:2,3)];
+    plot(x_femur_upper(1,:), x_femur_upper(2,:),'LineWidth',5);
+    
+    % plot the lower femur linkage
+    x_femur_lower = [hip2_frame(1:2,3), knee2_frame(1:2,3)];
+    plot(x_femur_lower(1,:),x_femur_lower(2,:),'LineWidth',5);
+    
     % plot hip linkage
     x_hip = [body_frame(1:2,3), hip_frame(1:2,3), hip2_frame(1:2,3)];
-    plot(x_hip(1,:),x_hip(2,:),'b','LineWidth',5);
+    plot(x_hip(1,:),x_hip(2,:),'LineWidth',5);
     
-    x_femur_upper = [hip_frame(1:2,3), knee_frame(1:2,3)];
-    plot(x_femur_upper(1,:), x_femur_upper(2,:),'r','LineWidth',5);
-    
-    x_femur_lower = [hip2_frame(1:2,3), knee2_frame(1:2,3)];
-    plot(x_femur_lower(1,:),x_femur_lower(2,:),'g','LineWidth',5);
-    
+    % plot the knee to foot linkage
     x_leg = [knee_frame(1:2,3), foot_frame(1:2,3)];
-    plot(x_leg(1,:),x_leg(2,:),'c','LineWidth',5);    
+    plot(x_leg(1,:),x_leg(2,:),'LineWidth',5);    
     
     % plot coordinate frames
     plot_coordinate_frame(body_frame);
