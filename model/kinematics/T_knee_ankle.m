@@ -1,4 +1,4 @@
-function T = T_knee_foot(q,p)
+function T = T_knee_ankle(q,p)
     th2 = q(4);
     th_hip = p(5);
     l3 = p(3);

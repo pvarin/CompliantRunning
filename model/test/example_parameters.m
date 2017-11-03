@@ -12,6 +12,7 @@ function p = example_parameters
     p(11) = 0.325;
     p(12) = 0.0; % position of lower femur COM relative to knee2 frame
     p(13) = 0.325;
-    p(14) = 0.0; % position of leg COM relative to foot frame
+    p(14) = 0.0; % position of leg COM relative to ankle frame
     p(15) = 0.75;
+    p(16) = 0.1; % uncompressed distance from ankle to foot tip
 end

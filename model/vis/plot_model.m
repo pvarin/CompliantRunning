@@ -1,6 +1,6 @@
 function plot_model(q,p)
     % compute keypoint frames
-    [body,hip,hip2,knee,knee2,foot,...
+    [body,hip,hip2,knee,knee2,ankle,foot,...
           body_com, hip_com, knee_com, knee2_com, foot_com]...
                                                           = get_frames(q,p);
     
@@ -16,9 +16,13 @@ function plot_model(q,p)
     x_hip = [body(1:2,3), hip(1:2,3), hip2(1:2,3)];
     plot(x_hip(1,:),x_hip(2,:),'LineWidth',5);
     
-    % plot the knee to foot linkage
-    x_leg = [knee(1:2,3), foot(1:2,3)];
-    plot(x_leg(1,:),x_leg(2,:),'LineWidth',5);    
+    % plot the knee to ankle linkage
+    x_leg = [knee(1:2,3), ankle(1:2,3)];
+    plot(x_leg(1,:),x_leg(2,:),'LineWidth',5);
+    
+    % plot the ankle to foot linkage
+    x_foot = [ankle(1:2,3), foot(1:2,3)];
+    plot(x_foot(1,:),x_foot(2,:),'LineWidth',5);
     
     % plot coordinate frames
     plot_coordinate_frame(body);
@@ -26,6 +30,7 @@ function plot_model(q,p)
     plot_coordinate_frame(hip2);
     plot_coordinate_frame(knee);
     plot_coordinate_frame(knee2);
+    plot_coordinate_frame(ankle);
     plot_coordinate_frame(foot);
     
     % compute and plot center of mass

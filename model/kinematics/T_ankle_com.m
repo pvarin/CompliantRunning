@@ -1,4 +1,4 @@
-function T = T_foot_com(p)
+function T = T_ankle_com(p)
     x_com = p(14);
     y_com = p(15);
     T = [1, 0, x_com
