@@ -8,16 +8,17 @@ function derive_symbolic
 
     % controls and contact forces
     syms tau1 tau2 Fx Fy
-    u = [0; 0; tau1; tau2];
-    Fc = [Fx; Fy; 0; 0];
+    u = [tau1; tau2];
+    Fc = [Fx; Fy];
 
     % parameters
     syms g l1 l2 l3 l4 l5 phi k...
          body_com_x body_com_y hip_com_x hip_com_y ...
          upper_femur_com_x upper_femur_com_y lower_femur_com_x lower_femur_com_y ...
          leg_com_x leg_com_y foot_com_x foot_com_y ...
-         body_mass hip_mass upper_femur_mass lower_femur_mass ankle_mass foot_mass
-
+         body_mass hip_mass upper_femur_mass lower_femur_mass ankle_mass foot_mass ...
+         I_body I_hip I_upper_femur I_lower_femur I_ankle I_foot
+     
     % physics
     p.g = g;
      
@@ -51,20 +52,81 @@ function derive_symbolic
     p.lower_femur_mass = lower_femur_mass; % mass of lower femur
     p.ankle_mass = ankle_mass; % mass of ankle
     p.foot_mass = foot_mass; % mass of foot
+    
+    p.I_body = I_body; % mass of body
+    p.I_hip = I_hip; % mass of hip
+    p.I_upper_femur = I_upper_femur; % mass of upper femur
+    p.I_lower_femur = I_lower_femur; % mass of lower femur
+    p.I_ankle = I_ankle; % mass of ankle
+    p.I_foot = I_foot; % mass of foot
 
     %% Compute Lagrangian
-    [body,hip,hip2,knee,knee2,ankle,foot,...
-     body_com, hip_com, knee_com, knee2_com, ankle_com, foot_com]...
-                                                             = get_frames(q,p);
-
-    body_pos = body_com(1:2,3);
-    hip_pos = hip_com(1:2,3);
-    knee_pos = knee_com(1:2,3);
-    knee2_pos = knee2_com(1:2,3);
-    ankle_pos = ankle_com(1:2,3);
-    foot_pos = foot_com(1:2,3);
-
     % potential energy
     V = potential_energy(q,p);
-    % TODO: finish deriving the lagrangian
+    
+    % kinetic energy
+    [~,~,~,~,~,~,foot, body_com, hip_com, knee_com,...
+                    knee2_com, ankle_com, foot_com] = get_frames(q,p);
+    ddt = @(r) jacobian(r,[q;dq])*[dq;ddq]; 
+    dbody_com = reshape(ddt(body_com(:)),3,3);
+    dhip_com = reshape(ddt(hip_com(:)),3,3);
+    dknee_com = reshape(ddt(knee_com(:)),3,3);
+    dknee2_com = reshape(ddt(knee2_com(:)),3,3);
+    dankle_com = reshape(ddt(ankle_com(:)),3,3);
+    dfoot_com = reshape(ddt(foot_com(:)),3,3);
+    
+    % linear kinetic energy
+    body_vel = dbody_com(1:2,3);
+    hip_vel = dhip_com(1:2,3);
+    knee_vel = dknee_com(1:2,3);
+    knee2_vel = dknee2_com(1:2,3);
+    ankle_vel = dankle_com(1:2,3);
+    foot_vel = dfoot_com(1:2,3);
+    
+    T = .5*p.body_mass*body_vel'*body_vel + .5*p.hip_mass*hip_vel'*hip_vel + ...
+        .5*p.upper_femur_mass*knee_vel'*knee_vel + .5*p.lower_femur_mass*knee2_vel'*knee2_vel + ...
+        .5*p.ankle_mass*ankle_vel'*ankle_vel + .5*p.foot_mass*foot_vel'*foot_vel;
+    
+    % rotational kinetic energy
+    body_rot = dbody_com(1:2,1).'*body_com(1:2,2);
+    hip_rot = dhip_com(1:2,1).'*hip_com(1:2,2);
+    upper_femur_rot = dknee_com(1:2,1).'*knee_com(1:2,2);
+    lower_femur_rot = dknee2_com(1:2,1).'*knee2_com(1:2,2);
+    ankle_rot = dankle_com(1:2,1).'*ankle_com(1:2,2);
+    foot_rot = dfoot_com(1:2,1).'*foot_com(1:2,2);
+    
+    T = .5*p.I_body*body_rot^2 + .5*p.I_hip*hip_rot^2 + ...
+        .5*p.I_upper_femur*upper_femur_rot^2 + .5*p.I_lower_femur*lower_femur_rot^2 + ...
+        .5*p.I_ankle*ankle_rot^2 + .5*p.I_foot*foot_rot^2;
+    
+    % energy and lagrangian
+    energy = T+V;
+    L = T-V;
+    
+    %% Derive the equations of motion
+    % foot jacobian to compute generalized force from foot contact
+    foot_pos = foot(1:2,3);
+    J_foot = jacobian(foot_pos,q);
+    B = zeros(5,2);
+    B(3,1) = 1;
+    B(4,2) = 1;
+    eom = ddt(jacobian(L,dq)') - jacobian(L,q)' - J_foot'*Fc - B*u;
+    
+    A = jacobian(eom,ddq); % mass matrix
+    b = A*ddq - eom; % everything other than the mass matrix
+    
+    %% Save functions
+    directory = 'autogen';
+    [~, ~, ~] = mkdir(directory);
+    addpath(directory)
+    
+    z = [q;dq];
+    p_array = cell2sym(struct2cell(p));
+    matlabFunction(T,'file',fullfile(directory,'kinetic_energy'),'vars',{z, p_array});
+    matlabFunction(energy,'file',fullfile(directory,'energy'),'vars',{z, p_array});
+    matlabFunction(A,'file',fullfile(directory, 'A'),'vars',{z, p_array});
+    matlabFunction(b,'file',fullfile(directory, 'b'),'vars',{z, u, Fc, p_array});
+    
+    % Add new functions to the path
+    
 end
