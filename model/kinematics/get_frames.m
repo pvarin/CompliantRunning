@@ -1,5 +1,5 @@
 function [body,hip,hip2,knee,knee2,ankle,foot,...
-          body_com, hip_com, knee_com, knee2_com, ankle_com]...
+          body_com, hip_com, knee_com, knee2_com, ankle_com, foot_com]...
                                                           = get_frames(q,p)
     % joint frames
     body = T_world_body(q,p);
@@ -16,5 +16,5 @@ function [body,hip,hip2,knee,knee2,ankle,foot,...
     knee_com = knee*T_knee_com(p);
     knee2_com = knee2*T_knee2_com(p);
     ankle_com = ankle*T_ankle_com(p);
-    % TODO: Foot COM
+    foot_com = foot*T_foot_com(p);
 end

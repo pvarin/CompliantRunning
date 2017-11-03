@@ -15,4 +15,6 @@ function p = example_parameters
     p(14) = 0.0; % position of leg COM relative to ankle frame
     p(15) = 0.75;
     p(16) = 0.1; % uncompressed distance from ankle to foot tip
+    p(17) = 0;   % position of the foot COM relative to the foor frame
+    p(18) = 0.05;
 end

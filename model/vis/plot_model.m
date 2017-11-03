@@ -1,7 +1,7 @@
 function plot_model(q,p)
     % compute keypoint frames
     [body,hip,hip2,knee,knee2,ankle,foot,...
-          body_com, hip_com, knee_com, knee2_com, foot_com]...
+          body_com, hip_com, knee_com, knee2_com, ankle_com, foot_com]...
                                                           = get_frames(q,p);
     
     % plot the upper femur linkage
@@ -43,6 +43,7 @@ function plot_model(q,p)
 %     knee_com_frame = knee_frame*T_knee_com(p);
     plot_com(knee_com)
 %     foot_com_frame = foot_frame*T_foot_com(p);
+    plot_com(ankle_com)
     plot_com(foot_com)
 end
 
