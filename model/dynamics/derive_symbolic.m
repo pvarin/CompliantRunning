@@ -83,9 +83,9 @@ function derive_symbolic
     ankle_vel = dankle_com(1:2,3);
     foot_vel = dfoot_com(1:2,3);
     
-    T = .5*p.body_mass*body_vel'*body_vel + .5*p.hip_mass*hip_vel'*hip_vel + ...
-        .5*p.upper_femur_mass*knee_vel'*knee_vel + .5*p.lower_femur_mass*knee2_vel'*knee2_vel + ...
-        .5*p.ankle_mass*ankle_vel'*ankle_vel + .5*p.foot_mass*foot_vel'*foot_vel;
+    T = .5*p.body_mass*(body_vel.'*body_vel) + .5*p.hip_mass*(hip_vel.'*hip_vel) + ...
+        .5*p.upper_femur_mass*(knee_vel.'*knee_vel) + .5*p.lower_femur_mass*(knee2_vel.'*knee2_vel) + ...
+        .5*p.ankle_mass*(ankle_vel.'*ankle_vel) + .5*p.foot_mass*(foot_vel.'*foot_vel);
     
     % rotational kinetic energy
     body_rot = dbody_com(1:2,1).'*body_com(1:2,2);
@@ -95,7 +95,7 @@ function derive_symbolic
     ankle_rot = dankle_com(1:2,1).'*ankle_com(1:2,2);
     foot_rot = dfoot_com(1:2,1).'*foot_com(1:2,2);
     
-    T = .5*p.I_body*body_rot^2 + .5*p.I_hip*hip_rot^2 + ...
+    T = T + .5*p.I_body*body_rot^2 + .5*p.I_hip*hip_rot^2 + ...
         .5*p.I_upper_femur*upper_femur_rot^2 + .5*p.I_lower_femur*lower_femur_rot^2 + ...
         .5*p.I_ankle*ankle_rot^2 + .5*p.I_foot*foot_rot^2;
     
@@ -110,7 +110,7 @@ function derive_symbolic
     B = zeros(5,2);
     B(3,1) = 1;
     B(4,2) = 1;
-    eom = ddt(jacobian(L,dq)') - jacobian(L,q)' - J_foot'*Fc - B*u;
+    eom = ddt(jacobian(L,dq).') - jacobian(L,q).' - J_foot.'*Fc - B*u;
     
     A = jacobian(eom,ddq); % mass matrix
     b = A*ddq - eom; % everything other than the mass matrix
@@ -126,7 +126,5 @@ function derive_symbolic
     matlabFunction(energy,'file',fullfile(directory,'energy'),'vars',{z, p_array});
     matlabFunction(A,'file',fullfile(directory, 'A'),'vars',{z, p_array});
     matlabFunction(b,'file',fullfile(directory, 'b'),'vars',{z, u, Fc, p_array});
-    
-    % Add new functions to the path
     
 end
