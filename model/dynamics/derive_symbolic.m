@@ -120,8 +120,12 @@ function derive_symbolic
     C1_foot_height = jacobian(C_foot_height,q);
     C2_foot_height = dq.'*jacobian(C1_foot_height,q)*dq;
     
+    C_foot_x = foot_pos(1);
+    C1_foot_x = jacobian(C_foot_x,q);
+    C2_foot_x = dq.'*jacobian(C1_foot_x,q)*dq;
+    
     x_c = [ddq; Fc];
-    g_c = [eom; C1_foot_height*ddq + C2_foot_height];
+    g_c = [eom; [C1_foot_x; C1_foot_height]*ddq + [C2_foot_x; C2_foot_height]];
     A_c = jacobian(g_c, x_c);
     b_c = simplify(A_c*x_c - g_c);
     

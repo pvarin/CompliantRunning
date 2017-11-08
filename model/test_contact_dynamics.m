@@ -6,7 +6,8 @@ function test_contact_dynamics
     
     % initialize states and parameters
     q0 = zeros(Nq,1);
-    q0(2) = 2;
+    q0(1) = -.5; q0(2) = -1;
+    q0(3) = pi;
     v0 = zeros(Nv,1);
     x0 = [q0;v0];
     p = example_parameters;
