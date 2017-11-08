@@ -9,7 +9,7 @@ function p = example_parameters
     p.l4 = 0.3;     % hip to hip2
     p.l5 = 0.1;     % uncompressed distance from ankle to foot tip
     p.phi = -0.5;   % angle between hip1 and hip2  
-    p.k = 1;
+    p.k = 1000;
 
     % center of mass position
     p.body_com_x = 0.1;         % position of body COM relative to body frame

@@ -115,6 +115,16 @@ function derive_symbolic
     A = jacobian(eom,ddq); % mass matrix
     b = A*ddq - eom; % everything other than the mass matrix
     
+    %% Derive the Contraint function
+    C_foot_height = foot_pos(2);
+    C1_foot_height = jacobian(C_foot_height,q);
+    C2_foot_height = dq.'*jacobian(C1_foot_height,q)*dq;
+    
+    x_c = [ddq; Fc];
+    g_c = [eom; C1_foot_height*ddq + C2_foot_height];
+    A_c = jacobian(g_c, x_c);
+    b_c = simplify(A_c*x_c - g_c);
+    
     %% Save functions
     directory = 'autogen';
     [~, ~, ~] = mkdir(directory);
@@ -126,5 +136,7 @@ function derive_symbolic
     matlabFunction(energy,'file',fullfile(directory,'energy'),'vars',{z, p_array});
     matlabFunction(A,'file',fullfile(directory, 'A'),'vars',{z, p_array});
     matlabFunction(b,'file',fullfile(directory, 'b'),'vars',{z, u, Fc, p_array});
-    
+    matlabFunction(C_foot_height,'file',fullfile(directory,'C_foot_height'),'vars',{z,p_array});
+    matlabFunction(A_c,'file',fullfile(directory,'A_c'),'vars',{z, p_array});
+    matlabFunction(b_c,'file',fullfile(directory,'b_c'),'vars',{z, u, p_array});
 end
