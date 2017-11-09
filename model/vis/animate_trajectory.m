@@ -1,11 +1,14 @@
-function animate_trajectory(q,p)
+function animate_trajectory(t,q,p)
     % animate the trajectory in a naive way
     figure(1)
-    for i=1:size(q,2)
-        clf; hold on;
-        axis equal
-        axis([-2 2 -2 2]) 
-        plot_model(q(:,i),p)
-        drawnow
+    clf; hold on;
+    
+    handles = plot_model(q(:,1),p);
+    axis equal
+    axis([-2 2 -2 2]) 
+    for i=2:size(q,2)
+        update_plot(q(:,i),p,handles)
+        drawnow limitrate
+        pause(t(i)-t(i-1))
     end
 end

@@ -1,4 +1,4 @@
-function test_contact_dynamics
+function test_hybrid_simulation
     % number of states
     Nq = 5; Nv = 5;
     q_idx = 1:Nq;
@@ -6,22 +6,19 @@ function test_contact_dynamics
     
     % initialize states and parameters
     q0 = zeros(Nq,1);
-    q0(1) = -.5; q0(2) = -1;
-    q0(3) = pi;
+    q0(3) = pi/8;
+    q0(2) = 2.5;
     v0 = zeros(Nv,1);
     x0 = [q0;v0];
     p = example_parameters;
     p_array = param2array(p);
-    tspan = [0;5];
-    
-    % define model dynamics
-    f = @(t,x) [x(v_idx); dynamics(x,p_array,ContactMode.stance)];
+    tspan = [0;2];
     
     % simulate
-    [T, X] = ode45(f,tspan,x0);
+    [T, X] = simulate_hybrid(x0, p_array, tspan);
     
     % plot
-    animate_trajectory(X(:,q_idx)',p)
+    animate_trajectory(T,X(:,q_idx)',p)
     
     figure(2); clf;
     plot(T,X(:,q_idx));

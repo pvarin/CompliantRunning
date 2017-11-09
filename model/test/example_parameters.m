@@ -31,12 +31,12 @@ function p = example_parameters
     p.upper_femur_mass = 1; % mass of upper femur
     p.lower_femur_mass = 1; % mass of lower femur
     p.ankle_mass = 1;       % mass of ankle
-    p.foot_mass = 1;        % mass of foot
+    p.foot_mass = .1;       % mass of foot
     
     p.I_body = 1;           % mass of body
     p.I_hip = 1;            % mass of hip
     p.I_upper_femur = 1;    % mass of upper femur
     p.I_lower_femur = 1;    % mass of lower femur
     p.I_ankle = 1;          % mass of ankle
-    p.I_foot = 1;           % mass of foot
+    p.I_foot = .01;         % mass of foot
 end
