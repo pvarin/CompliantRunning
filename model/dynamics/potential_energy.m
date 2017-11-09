@@ -6,5 +6,8 @@ function V = potential_energy(q,p)
         p.ankle_mass*p.g*ankle_com(2,3) + p.foot_mass*p.g*foot_com(2,3);
     
     % elastic potential energy
-    V = V + .5*p.k*q(5)^2;
+    s = 1./(1+exp(-1000*q(5))); % variable stiffness spring
+    k = s*p.k + (1-s)*p.k_stop;
+    
+    V = V + .5*k*q(5)^2;
 end

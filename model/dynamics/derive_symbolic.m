@@ -12,7 +12,7 @@ function derive_symbolic
     Fc = [Fx; Fy];
 
     % parameters
-    syms g l1 l2 l3 l4 l5 phi k...
+    syms g l1 l2 l3 l4 l5 phi k k_stop x_damping y_damping th1_damping th2_damping l_damping ...
          body_com_x body_com_y hip_com_x hip_com_y ...
          upper_femur_com_x upper_femur_com_y lower_femur_com_x lower_femur_com_y ...
          leg_com_x leg_com_y foot_com_x foot_com_y ...
@@ -30,6 +30,12 @@ function derive_symbolic
     p.l5 = l5; % uncompressed distance from ankle to foot tip
     p.phi = phi; % angle between hip1 and hip2
     p.k = k;
+    p.k_stop = k_stop;
+    p.x_damping = x_damping;
+    p.y_damping = y_damping;
+    p.th1_damping = th1_damping;
+    p.th2_damping = th2_damping;
+    p.l_damping = l_damping;
 
     % center of mass position
     p.body_com_x = body_com_x; % position of body COM relative to body frame
@@ -110,7 +116,8 @@ function derive_symbolic
     B = zeros(5,2);
     B(3,1) = 1;
     B(4,2) = 1;
-    eom = ddt(jacobian(L,dq).') - jacobian(L,q).' - J_foot.'*Fc - B*u;
+    D = diag([p.x_damping, p.y_damping, p.th1_damping, p.th2_damping, p.l_damping]);
+    eom = ddt(jacobian(L,dq).') - jacobian(L,q).' - J_foot.'*Fc - B*u + D*dq;
     
     A = jacobian(eom,ddq); % mass matrix
     b = A*ddq - eom; % everything other than the mass matrix
@@ -130,7 +137,8 @@ function derive_symbolic
     b_c = simplify(A_c*x_c - g_c);
     
     %% Save functions
-    directory = 'autogen';
+    dir = fileparts(mfilename('fullpath'));
+    directory = fullfile(dir,'autogen');
     [~, ~, ~] = mkdir(directory);
     addpath(directory)
     

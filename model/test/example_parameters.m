@@ -10,6 +10,12 @@ function p = example_parameters
     p.l5 = 0.1;     % uncompressed distance from ankle to foot tip
     p.phi = -0.5;   % angle between hip1 and hip2  
     p.k = 1000;
+    p.k_stop = 3000; % stiff spring for hard stop
+    p.x_damping = 0;
+    p.y_damping = 0;
+    p.th1_damping = 0;
+    p.th2_damping = 0;
+    p.l_damping = 30;
 
     % center of mass position
     p.body_com_x = 0.1;         % position of body COM relative to body frame
@@ -38,5 +44,5 @@ function p = example_parameters
     p.I_upper_femur = 1;    % mass of upper femur
     p.I_lower_femur = 1;    % mass of lower femur
     p.I_ankle = 1;          % mass of ankle
-    p.I_foot = .01;         % mass of foot
+    p.I_foot = .001;         % mass of foot
 end
