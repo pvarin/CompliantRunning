@@ -1,4 +1,4 @@
-function addModelPaths()
+function addAllPaths()
 %Add "model" folder to the path to give us access to all of those functions
 
     thisDir  = pwd;

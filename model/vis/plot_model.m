@@ -1,4 +1,6 @@
 function handles = plot_model(q,p,full)
+
+    LineWidth = 5;
     % compute keypoint frames
     [body,hip,hip2,knee,knee2,ankle,foot,...
           body_com, hip_com, knee_com, knee2_com, ankle_com, foot_com]...
@@ -6,23 +8,33 @@ function handles = plot_model(q,p,full)
     
     % plot the upper femur linkage
     x_femur_upper = [hip(1:2,3), knee(1:2,3)];
-    h_femur_upper = plot(x_femur_upper(1,:), x_femur_upper(2,:),'LineWidth',5);
+    h_femur_upper = plot(x_femur_upper(1,:), x_femur_upper(2,:),...
+        '.-','LineWidth',LineWidth,...
+        'MarkerSize',LineWidth*3);
     
     % plot the lower femur linkage
     x_femur_lower = [hip2(1:2,3), knee2(1:2,3)];
-    h_femur_lower = plot(x_femur_lower(1,:),x_femur_lower(2,:),'LineWidth',5);
+    h_femur_lower = plot(x_femur_lower(1,:),x_femur_lower(2,:),...
+        '.-','LineWidth',LineWidth,...
+        'MarkerSize',LineWidth*3);
     
     % plot hip linkage
     x_hip = [body(1:2,3), hip(1:2,3), hip2(1:2,3)];
-    h_hip = plot(x_hip(1,:),x_hip(2,:),'LineWidth',5);
+    h_hip = plot(x_hip(1,:),x_hip(2,:),...
+        '.-','LineWidth',LineWidth,...
+        'MarkerSize',LineWidth*3);
     
     % plot the knee to ankle linkage
     x_leg = [knee(1:2,3), ankle(1:2,3)];
-    h_leg = plot(x_leg(1,:),x_leg(2,:),'LineWidth',5);
+    h_leg = plot(x_leg(1,:),x_leg(2,:),...
+        '.-','LineWidth',LineWidth,...
+        'MarkerSize',LineWidth*3);
     
     % plot the ankle to foot linkage
     x_foot = [ankle(1:2,3), foot(1:2,3)];
-    h_foot = plot(x_foot(1,:),x_foot(2,:),'LineWidth',5);
+    h_foot = plot(x_foot(1,:),x_foot(2,:),...
+        '.-','LineWidth',LineWidth,...
+        'MarkerSize',LineWidth*3);
     
     handles = {h_femur_upper, h_femur_lower, h_hip, h_leg, h_foot};
     
