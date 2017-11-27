@@ -3,7 +3,9 @@ function addModelPaths()
 
     thisDir  = pwd;
     idcs   = strfind(thisDir,'\');
-    modelDir = thisDir(1:idcs(end)-1);
-    modelDir = [modelDir,'\model'];
-    addpath(genpath(modelDir));
+    mainDir = thisDir(1:idcs(end)-1);
+    modelDir = [mainDir,'\model'];
+    robotDir = [mainDir,'\physicalRobot'];
+    addpath(genpath(robotDir));
+    
 end

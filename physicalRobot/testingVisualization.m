@@ -1,6 +1,6 @@
 
 %Add "model" folder to the path to give us access to all of those functions
-    addModelPaths()
+    addModelPaths();
     
     
 %Plot the Visualization:
