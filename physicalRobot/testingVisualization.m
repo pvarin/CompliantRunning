@@ -14,3 +14,4 @@
     animate_trajectory(t,q,p);
     
     %test_vis_kinematic_traj
+    
