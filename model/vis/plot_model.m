@@ -6,6 +6,11 @@ function handles = plot_model(q,p,full)
           body_com, hip_com, knee_com, knee2_com, ankle_com, foot_com]...
                                                           = get_frames(q,p);
     
+    %Plot the ankle trajectory
+    x_ankle = [ankle(1,3) , ankle(2,3)];
+    h_ankle = plot(x_ankle(1),x_ankle(2),'k-');
+                                                    
+                                                      
     % plot the upper femur linkage
     x_femur_upper = [hip(1:2,3), knee(1:2,3)];
     h_femur_upper = plot(x_femur_upper(1,:), x_femur_upper(2,:),...
@@ -35,8 +40,10 @@ function handles = plot_model(q,p,full)
     h_foot = plot(x_foot(1,:),x_foot(2,:),...
         '.-','LineWidth',LineWidth,...
         'MarkerSize',LineWidth*3);
+        
     
-    handles = {h_femur_upper, h_femur_lower, h_hip, h_leg, h_foot};
+    handles =  {h_femur_upper, h_femur_lower, h_hip, h_leg, h_foot,...
+                h_ankle}; 
     
     if (nargin < 3 || ~full)
         return 

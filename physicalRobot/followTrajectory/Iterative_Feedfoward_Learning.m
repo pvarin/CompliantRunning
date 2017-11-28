@@ -2,14 +2,16 @@
 load('pts.mat');
 pts_foot = pts;
 
+%Set to the actual parameters
+p = example_parameters;
 
 angle1_init = 0;
 angle2_init = -pi/2;
 
-trajectory_time = 2;%0.5;
-buffer_time     = 2;
+trajectory_time = 1;%0.5;
+buffer_time     = 1;
 
-mappingWorkspace = 0;
+mappingWorkspace = 1;
 
 reset_learning = 0;
 learning_rate = .5;
@@ -46,12 +48,14 @@ if reset_learning || (exist('pts_dcur1') == 0)
     pts_dcur1 = zeros(1,13);
     pts_dcur2 = zeros(1,13);
 end
-[output_data] = Experiment_bezier(angle1_init, angle2_init, pts_foot, ...
+[output_data,q_out] = Experiment_bezier(angle1_init, angle2_init, pts_foot, ...
                         trajectory_time, buffer_time, pts_dcur1,pts_dcur2,...
-                        gains, duty_max);
+                        gains, duty_max,p);
 
 %% Extract data
 t = output_data(:,1);
+
+
 x = output_data(:,12); % current
 y = output_data(:,13); % current
    
@@ -93,3 +97,7 @@ xlabel('Time (s)'); ylabel('Current 2 (A)'); legend('Actual','Bezier Fit');
 % Update bezier points with learning rate
 pts_dcur1 = (1-learning_rate) * pts_dcur1 + learning_rate*pts_dcur1_new;
 pts_dcur2 = (1-learning_rate) * pts_dcur2 + learning_rate*pts_dcur2_new;
+
+
+%Plot the whole trajectory
+animate_trajectory(t,q_out,p);

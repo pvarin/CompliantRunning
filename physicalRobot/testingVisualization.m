@@ -9,5 +9,6 @@
     t = linspace(0,2,size(q,2));
     animate_trajectory(t,q,p);
     
+    
     %test_vis_kinematic_traj
     
