@@ -8,12 +8,12 @@ p = example_parameters;
 angle1_init = 0;
 angle2_init = -pi/2;
 
-trajectory_time = 1;%0.5;
-buffer_time     = 1;
+trajectory_time = 4;%0.5;
+buffer_time     = 2;
 
 mappingWorkspace = 1;
 
-reset_learning = 0;
+reset_learning = 1;
 learning_rate = .5;
 
 duty_max = .6;
@@ -41,6 +41,14 @@ else
 
 end
 
+
+
+%Add "model" and "physicalRobot" folders to the path
+%to give us access to all of those functions
+    numHops=2;
+    idcs   = strfind(pwd,'\');
+    mainDir = thisDir(1:idcs(end)-numHops);
+    addAllPaths(mainDir);
 
 
 %% Run Experiment
@@ -100,4 +108,16 @@ pts_dcur2 = (1-learning_rate) * pts_dcur2 + learning_rate*pts_dcur2_new;
 
 
 %Plot the whole trajectory
-animate_trajectory(t,q_out,p);
+    [ frames,fps ] = create_animation(t,q_out,p);
+        
+       % Create push button
+       
+    btn = uicontrol('Style', 'pushbutton',...
+        'Position', [10 10 80 50],...
+        'Callback', {@buttonCallback,frames,fps});
+    btn.FontSize=12;
+    btn.Position=[[10 10 80 80]];
+    btn.String =  '<html> <center> Play <br> Realtime </center></html>';
+    
+    
+%animate_trajectory(t(1:10:end),q_out(:,1:10:end),p);

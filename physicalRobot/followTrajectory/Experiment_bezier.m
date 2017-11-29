@@ -1,7 +1,4 @@
 function [output_data,q] = Experiment_bezier( angle1_init, angle2_init, pts_foot, traj_time, buffer_time, pts_cur1, pts_cur2, gains, duty_max,p)
-    %Get Params
-        
-
     %Set up figures
         figure(2);  clf;       
         a1 = subplot(421);
@@ -60,7 +57,7 @@ function [output_data,q] = Experiment_bezier( angle1_init, angle2_init, pts_foot
         clf; hold on;
         handles = plot_model(zeros(5,1),p);
         axis equal
-        axis([-2 2 -2 2])
+        axis([-3 3 -3 3])
        
     
      
@@ -191,7 +188,7 @@ q=[];
         
         %Redraw the Robot
             update_plot(q(:,end),p,handles);
-    
+            update_traces(q(:,end),p,handles);  
 %         z = [pos1(end) pos2(end) vel1(end) vel2(end)]';
 %         keypoints = keypoints_leg(z,p);
 %         

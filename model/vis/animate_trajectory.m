@@ -6,7 +6,7 @@ function animate_trajectory(t,q,p)
     handles = plot_model(q(:,1),p);
     
     axis equal
-    axis([-2 2 -2 2])
+    axis([-3 3 -3 3])
     
     ax=gca;
     x2 = ax.XLim(2) - 0.5.*(ax.XLim(2)-ax.XLim(1));

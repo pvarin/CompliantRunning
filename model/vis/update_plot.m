@@ -10,7 +10,6 @@ function update_plot(q, p, handles)
     h_hip = handles{3};
     h_leg = handles{4};
     h_foot = handles{5};
-    h_ankle = handles{6};
     
     % plot the upper femur linkage
     x_femur_upper = [hip(1:2,3), knee(1:2,3)];
@@ -36,9 +35,6 @@ function update_plot(q, p, handles)
     x_foot = [ankle(1:2,3), foot(1:2,3)];
     h_foot.XData = x_foot(1,:);
     h_foot.YData = x_foot(2,:);
-    
-    x_ankle = [ankle(1,3),ankle(2,3)];
-    h_ankle.XData(end+1) = x_ankle(1);
-    h_ankle.YData(end+1) = x_ankle(2);
+   
     
 end
