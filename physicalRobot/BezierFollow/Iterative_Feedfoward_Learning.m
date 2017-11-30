@@ -110,14 +110,10 @@ pts_dcur2 = (1-learning_rate) * pts_dcur2 + learning_rate*pts_dcur2_new;
 %Plot the whole trajectory
     [ frames,fps ] = create_animation(t,q_out,p);
         
-       % Create push button
-       
+% Create push button
     btn = uicontrol('Style', 'pushbutton',...
         'Position', [10 10 80 50],...
         'Callback', {@buttonCallback,frames,fps});
     btn.FontSize=12;
     btn.Position=[[10 10 80 80]];
     btn.String =  '<html> <center> Play <br> Realtime </center></html>';
-    
-    
-%animate_trajectory(t(1:10:end),q_out(:,1:10:end),p);

@@ -70,6 +70,7 @@ function output = RunExperiment(dest_ip,port,input,output_size,params)
     u.InputBufferSize = 1000000;
     u.DatagramReceivedFcn = @recv;
     u.DatagramTerminateMode = 'on';
+    u.OutputBufferSize = 100000;
     
     fopen(u);
     
