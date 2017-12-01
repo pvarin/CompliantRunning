@@ -1,0 +1,35 @@
+Mass properties of Hip2
+     Configuration: Default
+     Coordinate system: -- default --
+     Origin: In the center of the lower motor
+
+Density = 0.03685 pounds per cubic inch
+
+Mass = 0.22394 pounds
+
+Volume = 6.07722 cubic inches
+
+Surface area = 37.82123 square inches
+
+Center of mass: ( inches )
+	X = -0.37403
+	Y = -0.10581
+	Z = -0.30872
+
+Principal axes of inertia and principal moments of inertia: ( pounds * square inches )
+Taken at the center of mass.
+	 Ix = (-0.26789,  0.96341,  0.00861)   	Px = 0.10932
+	 Iy = (-0.96341, -0.26795,  0.00668)   	Py = 0.63911
+	 Iz = ( 0.00874, -0.00650,  0.99994)   	Pz = 0.73265
+
+Moments of inertia: ( pounds * square inches )
+Taken at the center of mass and aligned with the output coordinate system.
+	Lxx = 0.60110	Lxy = -0.13673	Lxz = -0.00204
+	Lyx = -0.13673	Lyy = 0.14738	Lyz = 0.00500
+	Lzx = -0.00204	Lzy = 0.00500	Lzz = 0.73260
+
+Moments of inertia: ( pounds * square inches )
+Taken at the output coordinate system.
+	Ixx = 0.62495	Ixy = -0.12786	Ixz = 0.02382
+	Iyx = -0.12786	Iyy = 0.20005	Iyz = 0.01232
+	Izx = 0.02382	Izy = 0.01232	Izz = 0.76643

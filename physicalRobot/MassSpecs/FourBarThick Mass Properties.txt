@@ -1,0 +1,35 @@
+Mass properties of FourBarThick2
+     Configuration: Default
+     Coordinate system: -- default 
+     Origin: Halfway Between the Wholes on the flat surface
+
+Density = 0.03685 pounds per cubic inch
+
+Mass = 0.08168 pounds
+
+Volume = 2.21651 cubic inches
+
+Surface area = 18.03950 square inches
+
+Center of mass: ( inches )
+	X = 0.34642
+	Y = 0.00000
+	Z = 0.27029
+
+Principal axes of inertia and principal moments of inertia: ( pounds * square inches )
+Taken at the center of mass.
+	 Ix = ( 0.99934,  0.00000,  0.03643)   	Px = 0.01342
+	 Iy = ( 0.00000,  1.00000,  0.00000)   	Py = 0.12675
+	 Iz = (-0.03643,  0.00000,  0.99934)   	Pz = 0.13662
+
+Moments of inertia: ( pounds * square inches )
+Taken at the center of mass and aligned with the output coordinate system.
+	Lxx = 0.01359	Lxy = 0.00000	Lxz = 0.00448
+	Lyx = 0.00000	Lyy = 0.12675	Lyz = 0.00000
+	Lzx = 0.00448	Lzy = 0.00000	Lzz = 0.13646
+
+Moments of inertia: ( pounds * square inches )
+Taken at the output coordinate system.
+	Ixx = 0.01955	Ixy = 0.00000	Ixz = 0.01213
+	Iyx = 0.00000	Iyy = 0.14251	Iyz = 0.00000
+	Izx = 0.01213	Izy = 0.00000	Izz = 0.14626
