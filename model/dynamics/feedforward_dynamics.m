@@ -1,8 +1,4 @@
-function [qdd, Fc] = dynamics(z,p,mode)
-
-    % compute control
-    u = control_law(z,p,mode);
-    
+function [qdd, Fc] = feedforward_dynamics(z,u,p,mode)
     % choose dynamics based on mode
     if mode == ContactMode.flight
         Fc = [0;0];
