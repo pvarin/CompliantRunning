@@ -9,12 +9,12 @@
     
     
 %Plot the Visualization:
-    q = example_kinematic_trajectory;
-    p = example_parameters;
-    t = linspace(0,2,size(q,2));
-    [ frames,fps ] = create_animation(t,q,p);
+    q_DES = sample_traj;
+    p = true_parameters;
+    t = linspace(0,2,size(q_DES,2));
+    [ frames,fps ] = create_animation(t,q_DES,p);
     disp(['We are animating at: ',num2str(fps)]);
-    movie(frames,4,fps);
+    movie(frames,2,fps);
     
     
     %test_vis_kinematic_traj

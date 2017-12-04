@@ -1,4 +1,4 @@
-function [ frames,fps ] = create_animation(t,q,p)
+function [ frames,fps ] = create_animation(t,q,p, FlipAxis)
 %CREATE_ANIMATION -  It creates an animation
 
 % animate the trajectory in a naive way
@@ -8,11 +8,16 @@ function [ frames,fps ] = create_animation(t,q,p)
     handles = plot_model(q(:,1),p);
     
     axis equal
-    axis([-3 3 -3 3])
+    axis([-0.7 0.7 -0.5 0.5])
     
     ax=gca;
     x2 = ax.XLim(2) - 0.5.*(ax.XLim(2)-ax.XLim(1));
     y2 = ax.YLim(2) - 0.05.*(ax.YLim(2)-ax.YLim(1));
+    
+    if FlipAxis
+    ax.XDir='reverse';
+    end
+    
     h_text=text(x2,y2,'');  
     h_text.String=['Current Time: ',num2str(t(1)),' sec'];
     
