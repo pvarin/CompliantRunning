@@ -1,11 +1,11 @@
-function z=dirtran_hopper
-    Nt = 100;
+function [x_traj, u_traj, h]=dirtran_hopper
+    Nt = 20;
     Nx = 10;
     Nu = 2;
     
     %% Initialize
     % define hybrid mode switching time
-    stance_idx = 1:(Nt-50);
+    stance_idx = 1:(Nt-10);
     flight_idx = stance_idx(end)+1:Nt;
     
     % stack the optimization variables
@@ -27,15 +27,24 @@ function z=dirtran_hopper
     A_in = []; b_in = [];
     A_eq = []; b_eq = [];
     
+    x_vec_idx = reshape(x_idx,Nx,[]);
+    
+    % start the body x at 0
+    lb(x_vec_idx(1,1)) = 0;
+    ub(x_vec_idx(1,1)) = 0;
+    
+    % move forward
+    lb(x_vec_idx(1,end)) = 0;
+    
     % torques
-    u_min = -1;
-    u_max =  1;
+    u_min = -10;
+    u_max =  10;
     lb(u_idx) = u_min;
     ub(u_idx) = u_max;
     
     % trajectory time
     lb(h_idx) = 1e-4; % make time run forward
-    total_time = 2;   % Nt*(h1 + h2) must equal the total time
+    total_time = 5;   % Nt*(h1 + h2) must equal the total time
     a = zeros(1,length(z_0));
     a(1,h_idx) = Nt/2;
     b = total_time;
@@ -46,14 +55,18 @@ function z=dirtran_hopper
     nonlcon = @(z) constraints(reshape(z(x_idx),Nx,[]), reshape(z(u_idx),Nu,[]), z(h_idx), p, stance_idx, flight_idx);
     
     %% Optimize the Trajectory
-    options = optimoptions('fmincon','MaxFunctionEvaluations',10000000);
+    options = optimoptions('fmincon','MaxFunctionEvaluations',10000000,'MaxIterations',10000000);
     z = fmincon(cost, z_0, A_in, b_in, A_eq, b_eq, lb, ub, nonlcon, options);
     x_traj = reshape(z(x_idx),Nx,[]);
-    h1 = z(h_idx(1));
-    h2 = z(h_idx(2));
+    u_traj = reshape(z(u_idx),Nu,[]);
+    h = z(h_idx);
     
     %% Visualize
     % TODO: visualize trajectory
+    [g_in, g_eq] = constraints(x_traj, u_traj, h, p, stance_idx, flight_idx);
+    figure; clf;
+    plot(g_in); hold on
+    plot(g_eq)
 end
 
 function [g_in, g_eq] = constraints(x_traj, u_traj, h, p, stance_idx, flight_idx)
@@ -86,7 +99,7 @@ function [g_in, g_eq] = constraints(x_traj, u_traj, h, p, stance_idx, flight_idx
     end
     for i=flight_idx
         dx = feedforward_dynamics(x_traj(:,i),u_traj(:,i), p_array, ContactMode.flight);
-        i_flight = i-i(1)+1;
+        i_flight = i-flight_idx(1)+1;
         dx_flight(:,i_flight) = [x_traj(6:end,i); dx];
     end
     
@@ -94,5 +107,5 @@ function [g_in, g_eq] = constraints(x_traj, u_traj, h, p, stance_idx, flight_idx
     g_eq = [g_eq; reshape(x_traj(:,1:end-1) + dx(:,1:end-1) - x_traj(:,2:end),[],1)];
     
     % liftoff constraint
-    g_eq = [g_eq; Fc_stance(2,1)];
+    g_eq = [g_eq; Fc_stance(2,end)];
 end
