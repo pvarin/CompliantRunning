@@ -1,4 +1,4 @@
-function [output_data,q_vis] = Experiment_Traj( angle1_init, angle2_init, traj_ptcount, traj_timestep , traj_time, traj_numReps, buffer_time, q_traj, u_traj, gains, duty_max, p)
+function [output_data,q_vis] = Experiment_Traj( angle1_init, angle2_init, traj_ptcount, traj_timestep , traj_time, traj_numReps, buffer_time, q_traj, u_traj, gains, duty_max, p, angle1_init_vis, angle2_init_vis)
 %EXPERIMENT_TRAJ - Performs the experiment
 %
 %   INPUTS:
@@ -29,69 +29,85 @@ function [output_data,q_vis] = Experiment_Traj( angle1_init, angle2_init, traj_p
 
 %Set up figures
         figure(2);  clf;       
-        a1 = subplot(421);
+        a1 = subplot(4,3,1);
         hold on
         h1 = plot([0],[0]);
         h1_d = plot([0],[0],'r');
         h1.XData = []; h1.YData = [];
         h1_d.XData = []; h1_d.YData = [];
-        ylabel('Angle 1 (rad)');
+        title('Angle 1 (rad)');
 
-        a2 = subplot(423);
+        a2 = subplot(4,3,4);
         h2 = plot([0],[0]);
         h2.XData = []; h2.YData = [];
-        ylabel('Velocity 1 (rad/s)');
+        title('Velocity 1 (rad/s)');
 
-        a3 = subplot(425);
+        a3 = subplot(4,3,7);
         h3 = plot([0],[0]);
         h3.XData = []; h3.YData = [];
-        ylabel('Current 1 (A)');
+        title('Current 1 (A)');
         hold on;
-        subplot(425);
+        subplot(4,3,7);
         h4 = plot([0],[0],'r');
         h4.XData = []; h4.YData = [];
         hold off;
 
-        a4 = subplot(427);
+        a4 = subplot(4,3,10);
         h5 = plot([0],[0]);
         h5.XData = []; h5.YData = [];
-        ylabel('Duty Ratio 1 (%)');
+        title('Duty Ratio 1 (%)');
 
 
-        a5 = subplot(422);
+        a5 = subplot(4,3,2);
         hold on
         h12 = plot([0],[0]);
         h12_d = plot([0],[0],'r');
         h12.XData = []; h12.YData = [];
         h12_d.XData = []; h12_d.YData = [];
-        ylabel('Angle 2 (rad)');
+        title('Angle 2 (rad)');
 
-        a6 = subplot(424);
+        a6 = subplot(4,3,5);
         h22 = plot([0],[0]);
         h22.XData = []; h22.YData = [];
-        ylabel('Velocity (counts/s)');
+        title('Velocity (counts/s)');
 
-        a7 = subplot(426);
+        a7 = subplot(4,3,8);
         h32 = plot([0],[0]);
         h32.XData = []; h32.YData = [];
-        ylabel('Current 2 (A)');
+        title('Current 2 (A)');
         hold on;
-        subplot(426);
+        subplot(4,3,8);
         h42 = plot([0],[0],'r');
         h42.XData = []; h42.YData = [];
         hold off;
-        a8 = subplot(428);
+        a8 = subplot(4,3,11);
         h52 = plot([0],[0]);
         h52.XData = []; h52.YData = [];
-        ylabel('Duty Ratio 2 (%)');
+        title('Duty Ratio 2 (%)');
     
+        
+        
+        
+   
+        a8 = subplot(4,3,3);
+        hold on
+        h_f = plot([0],[0]);
+        h_f.XData = []; h_f.YData = [];
+        title('Foot Position (m)');
+        
+        a9=subplot(4,3,6);
+        h_hy=plot([0],[0]);
+        h_hy.XData=[]; h_hy.YData=[];
+        a9.YLim=[-0.5,1.5];
+        title('Hybrid State');
+        
     
     %Set up visualization 
         figure(1)
         clf; hold on;
         handles = plot_model(zeros(5,1),p);
         axis equal
-        axis([-3 3 -3 3])
+        axis([-0.7 0.7 -0.5 0.5])
        
     
      
@@ -165,7 +181,7 @@ q_vis=[];
 %         vx_foot_des = new_data(:,18); % current
 %         vy_foot_des = new_data(:,19); % current       
         
-        l_foot = new_data(:,20); %Foot Position
+        l_foot = new_data(:,20)/100; %Foot Position
         
         x_body = new_data(:,21); %MCU's estimate of the body position
         y_body = new_data(:,22); %MCU's estimate of the body position
@@ -202,12 +218,20 @@ q_vis=[];
         h52.XData(end+1:end+N) = t;   
         h52.YData(end+1:end+N) = duty2;
         
+        h_f.XData(end+1:end+N) = t;
+        h_f.YData(end+1:end+N) = l_foot;
+        
+        h_hy.XData(end+1:end+N)=t;
+        h_hy.YData(end+1:end+N)=hybridState;
+        
+        
         %Build q using sensor data
         q_vis(:,end+1: end+N) = [x_body'
                              y_body'
-                             pos1'
                              pos2'
+                             pos1'
                              l_foot'];
+        
           
         %Update ankle position tracker
 %         ankle_vec=zeros(2,N);
@@ -256,7 +280,7 @@ q_vis=[];
     %% Parameters for tuning
     pwm_period_us               = 100;  % PWM_Period in mirco seconds
     current_control_period_us   = 100;  % Current control period in micro seconds
-    impedance_control_period_us = 500; % Impedance control period in microseconds seconds
+    impedance_control_period_us = 1000; % Impedance control period in microseconds seconds
     start_period                = buffer_time;   % Experiment time in seconds 
     end_period                  = buffer_time;   % Experiment time in seconds 
     
@@ -277,6 +301,10 @@ q_vis=[];
     D_q2                     = gains.D_q2; % Damping
     D_q1q2                   = gains.D_q1q2; % Damping
     
+    f_tau = 0.2;
+    f_threshUp = 0.1;
+    f_threshDown = 0.25;
+    
     
     %% Sepectify inputs
     input = [pwm_period_us current_control_period_us impedance_control_period_us start_period traj_time end_period];
@@ -284,6 +312,7 @@ q_vis=[];
     input = [input current_gain K_q1 K_q2 K_q1q2 D_q1 D_q2 D_q1q2];
     input = [input duty_max];
     input = [input traj_ptcount traj_timestep traj_numReps];
+    input = [input f_tau f_threshUp f_threshDown];
     
     traj_maxpts=300;
     traj_send = [q_traj ;  u_traj];
