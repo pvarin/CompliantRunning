@@ -8,73 +8,71 @@
     addAllPaths(mainDir);
 
 % Desired position of the foot, specified via Bezier waypoints
-load('pts.mat');
-pts_foot = pts;
+    load('pts.mat');
+    pts_foot = pts;
 
 %Set to the actual parameters
-p = true_parameters;
+    p = true_parameters;
 
-angle1_init = 0;
-angle2_init = 0;%-pi/2;
+    angle1_init = 0;
+    angle2_init = 0;%-pi/2;
 
-angle1_init_vis = -pi/4;
-angle2_init_vis = 0;%-pi/2;
-flipAxis=1;
+%Set up visualization
+    angle1_init_vis = -pi/4;
+    angle2_init_vis = 0;%-pi/2;
+    flipAxis=1;
 
+%Set Up Trajectory 
+    traj_numReps = 20;
+    trajectory_time = 0.55;%0.5;
+    traj_ptcount = 200;
+    traj_timestep = trajectory_time/traj_ptcount;
 
-traj_numReps = 20;
-trajectory_time = 0.55;%0.5;
-traj_ptcount = 200;
-traj_timestep = trajectory_time/traj_ptcount;
+    traj_timestep_us = traj_timestep*10^6;
 
-traj_timestep_us = traj_timestep*10^6;
+    %Create an arbitrary sine wave trajectory
 
-%Create an arbitrary sine wave trajectory
-
-t_build = linspace(0,trajectory_time-traj_timestep,traj_ptcount);
-
-
-
-
-%Trajectory Function
-    amplitudeQ1= pi./6;
-    amplitudeQ2= pi./16;
-    Num=4;
-
-    derivFactor = (2*pi*Num/trajectory_time);
-    
-    sinFactor=Num* t_build*2*pi/trajectory_time;
-    duty=0.5;
-
-    q_traj=([amplitudeQ1* sin(sinFactor+duty*sin(sinFactor))+pi/2.5
-             amplitudeQ2* sin(sinFactor+duty*sin(sinFactor)+pi)+pi/10 
-             amplitudeQ1*derivFactor* cos(Num* t_build*2*pi/trajectory_time)
-             amplitudeQ2*derivFactor* -sin(Num* t_build*2*pi/trajectory_time)]);
+    t_build = linspace(0,trajectory_time-traj_timestep,traj_ptcount);
 
 
+    %Trajectory Function
+        amplitudeQ1= pi./6;
+        amplitudeQ2= pi./16;
+        Num=4;
 
-    %q_traj=(amplitude.*[ sin(Num* t_build*2*pi/trajectory_time)
-    %         zeros(size(t_build))
-    %         cos(Num* t_build*2*pi/trajectory_time)
-    %         zeros(size(t_build))]);
-          
-    figure(101)    
-    plot(t_build, q_traj(1:2,:))
-    title('Trajectory')
+        derivFactor = (2*pi*Num/trajectory_time);
 
-    u_traj= zeros(2,traj_ptcount);
+        sinFactor=Num* t_build*2*pi/trajectory_time;
+        duty=0.5;
+
+        q_traj=([amplitudeQ1* sin(sinFactor+duty*sin(sinFactor))+pi/2.5
+                 amplitudeQ2* sin(sinFactor+duty*sin(sinFactor)+pi)+pi/10 
+                 amplitudeQ1*derivFactor* cos(Num* t_build*2*pi/trajectory_time)
+                 amplitudeQ2*derivFactor* -sin(Num* t_build*2*pi/trajectory_time)]);
 
 
 
+        %q_traj=(amplitude.*[ sin(Num* t_build*2*pi/trajectory_time)
+        %         zeros(size(t_build))
+        %         cos(Num* t_build*2*pi/trajectory_time)
+        %         zeros(size(t_build))]);
 
-buffer_time     = 3;
+        figure(101)    
+        plot(t_build, q_traj(1:2,:))
+        title('Trajectory')
 
-mappingWorkspace = 0;
+        u_traj= zeros(2,traj_ptcount);
 
-reset_learning = 1;
-learning_rate = .5;
 
-duty_max = 0.85;
+%Set up other stuff
+    buffer_time     = 3;
+
+    mappingWorkspace = 0;
+
+    reset_learning = 1;
+    learning_rate = .5;
+
+    duty_max = 0.85;
 
 
 %%
