@@ -1,4 +1,4 @@
-function [output_data,q_vis] = Experiment_Traj( angle1_init, angle2_init, traj_ptcount, traj_timestep , traj_time, traj_numReps, buffer_time, q_traj, u_traj, gains, duty_max, p, angle1_init_vis, angle2_init_vis)
+function [output_data,q_vis] = Experiment_Traj( angle1_init, angle2_init, traj_ptcount, traj_timestep , traj_time, traj_numReps, buffer_time, q_traj, u_traj, gains, duty_max, p, angle1_init_vis, angle2_init_vis, x_final, DetectContact)
 %EXPERIMENT_TRAJ - Performs the experiment
 %
 %   INPUTS:
@@ -101,6 +101,14 @@ function [output_data,q_vis] = Experiment_Traj( angle1_init, angle2_init, traj_p
         a9.YLim=[-0.5,1.5];
         title('Hybrid State');
         
+        a10=subplot(4,3,9);
+        for i=1:4
+        h_sensor(i)=plot([0],[0]);
+        h_sensor(i).XData=[]; h_sensor(i).YData=[];
+        hold on
+        end
+        title('Raw Sensor Output');
+        
     
     %Set up visualization 
         figure(1)
@@ -186,7 +194,9 @@ q_vis=[];
         x_body = new_data(:,21); %MCU's estimate of the body position
         y_body = new_data(:,22); %MCU's estimate of the body position
         
-        hybridState = new_data(:,23); %1 if by land, 2 if by air
+        hybridState = new_data(:,23); %1 if by land, 0 if by air
+        
+        sensors=new_data(:,24:27);
         
 %         
         
@@ -224,12 +234,18 @@ q_vis=[];
         h_hy.XData(end+1:end+N)=t;
         h_hy.YData(end+1:end+N)=hybridState;
         
+        for j=1:4
+        h_sensor(j).XData(end+1:end+N)= t;
+        h_sensor(j).YData(end+1:end+N)=sensors(:,j);
+        end
+        
+        
         
         %Build q using sensor data
         q_vis(:,end+1: end+N) = [x_body'
                              y_body'
-                             pos2'
                              pos1'
+                             pos2'
                              l_foot'];
         
           
@@ -301,9 +317,10 @@ q_vis=[];
     D_q2                     = gains.D_q2; % Damping
     D_q1q2                   = gains.D_q1q2; % Damping
     
-    f_tau = 0.2;
-    f_threshUp = 0.1;
-    f_threshDown = 0.25;
+    f_tau = 1;
+    f_threshUp = 0.4;
+    f_threshDown = 0.4;
+    raw_tau=0.2;
     
     
     %% Sepectify inputs
@@ -313,8 +330,10 @@ q_vis=[];
     input = [input duty_max];
     input = [input traj_ptcount traj_timestep traj_numReps];
     input = [input f_tau f_threshUp f_threshDown];
-    
+    input = [input raw_tau];
+        
     traj_maxpts=300;
+    %q_traj=-q_traj;
     traj_send = [q_traj ;  u_traj];
     traj_send = [traj_send, zeros(6,traj_maxpts-traj_ptcount)];
     
@@ -322,10 +341,15 @@ q_vis=[];
     
     input = [input traj_send(:)'];
     
-    params.timeout  = (start_period+traj_time+end_period);  
+    %x_final=-x_final;
+    if DetectContact
+        input = [input x_final];
+    end
+    
+    params.timeout  = (start_period+5*traj_numReps*traj_time+end_period);  
     
     
-    output_size = 23;    % number of outputs expected
+    output_size = 27;    % number of outputs expected
     output_data = RunExperiment(frdm_ip,frdm_port,input,output_size,params);
     linkaxes([a1 a2 a3 a4],'x')
     
