@@ -2,7 +2,7 @@ function [ frames,fps ] = create_animation(t,q,p, FlipAxis)
 %CREATE_ANIMATION -  It creates an animation
 
 % animate the trajectory in a naive way
-    figure(100)
+    figHand=figure(100);
     clf; hold on;
     
     handles = plot_model(q(:,1),p);
@@ -44,7 +44,7 @@ function [ frames,fps ] = create_animation(t,q,p, FlipAxis)
             drawnow
 
                 %disp(['Saving Frame: ',num2str(i)]);
-                frames(end+1) = getframe;
+                frames(end+1) = getframe(figHand);
         end
         
      %Save the last frame regardless of if the timing
